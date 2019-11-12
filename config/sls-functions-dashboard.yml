@@ -1,0 +1,24 @@
+apiFahrgebiet:
+  handler: server/dashboard.handler
+  name: ${self:provider.stage}-apiDashboard
+  events:
+    - http:
+        path: fahrgebiet/{proxy+}
+        method: any
+        authorizer: tokenValidator
+        cors: true
+    - http:
+        path: fahrgebiet
+        method: any
+        authorizer: tokenValidator
+        cors: true
+    - http:
+        path: fahrziel/{proxy+}
+        method: any
+        authorizer: tokenValidator
+        cors: true
+    - http:
+        path: fahrziel
+        method: any
+        authorizer: tokenValidator
+        cors: true

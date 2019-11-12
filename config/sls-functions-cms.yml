@@ -1,0 +1,24 @@
+apiCms:
+  handler: server/cms.handler
+  name: ${self:provider.stage}-apiCms
+  events:
+    - http:
+        path: cms/layout
+        method: get
+        cors: true
+    - http:
+        path: cms/node/{proxy+}
+        method: get
+        cors: true
+    - http:
+        path: cms/jsonapi/node/{proxy+}
+        method: get
+        cors: true
+    - http:
+        path: cms/paragraph/{pid}
+        method: get
+        cors: true
+    - http:
+        path: cms/media/{mid}
+        method: get
+        cors: true

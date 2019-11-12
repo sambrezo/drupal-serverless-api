@@ -1,0 +1,56 @@
+# Serverless.yml Reference
+# https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/
+service:
+  name: drupal-serverless-api
+   # Optional KMS key arn which will be used for encryption for all functions
+  awsKmsKeyArn: arn:aws:kms:eu-central-1:xxxxxxxxxxxx:key/${file(config/sls-environment.yml):${self:provider.stage}.KMS_KEY_ID}
+
+provider:
+  name: aws
+  # AWS named profile from ~/.aws/credentials
+  # Needs a bunch of permissions to create the stack, see Serverless documentation
+  # $ aws configure --profile drupal
+  # You might need to set the profile explicitly during deployment:
+  # $ AWS_PROFILE=drupal sls deploy
+  profile: drupal
+  runtime: nodejs8.10
+  # Overwrite the default memory size. Default is 1024
+  memorySize: 512
+  # The default is 6 seconds. Note: API Gateway current maximum is 30 seconds
+  timeout: 30
+  # CLI option --stage takes precedence
+  stage: ${opt:stage, 'dev'}
+  # Regional API Gateway, default: EDGE (AWS CloudFront CDN)
+  endpointType: REGIONAL
+  region: eu-central-1
+  # Managed policies via AWS console (outside CloudFormation)
+  # See documentation for required policies
+  role: arn:aws:iam::xxxxxxxxxxxx:role/lambda_basic_execution
+  # You can enable VPC containment for Lambda, but you lose Internet connection
+  # vpc:
+  #   securityGroupIds:
+  #     - sg-da9d15b5
+  #   subnetIds:
+  #     - subnet-201f4a5d
+  #     - subnet-5d8d9236
+  # Drupal configuration
+  environment: ${file(config/sls-environment.yml):${self:provider.stage}}
+
+functions:
+  # Lambda token authorizer (does authentication)
+  - ${file(config/sls-functions-authorizer.yml)}
+  # Node Express routes
+  - ${file(config/sls-functions-cms.yml)}
+  - ${file(config/sls-functions-dashboard.yml)}
+  - ${file(config/sls-functions-user.yml)}
+  - ${file(config/sls-functions-flights.yml)}
+
+resources:
+  # Have fun with this
+  - ${file(config/sls-resources-cors-401.yml)}
+  # Pass authentication through to Drupal
+  # Configured to be excluded from SSL client authentication
+  - ${file(config/sls-resources-oauth.yml)}
+
+plugins:
+  - serverless-offline
