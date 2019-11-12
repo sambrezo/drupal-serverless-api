@@ -1,0 +1,10 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+# SSL client certificate
+client_cert/service_api.key
+client_cert/service_api.crt

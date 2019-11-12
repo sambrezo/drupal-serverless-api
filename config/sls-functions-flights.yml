@@ -1,0 +1,8 @@
+apiFlights:
+  handler: server/flights.handler
+  name: ${self:provider.stage}-apiFlights
+  events:
+    - http:
+        path: flights/lh/{proxy+}
+        method: get
+        cors: true

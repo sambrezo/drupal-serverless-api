@@ -1,0 +1,34 @@
+{
+  "name": "drupal-serverless-api",
+  "version": "1.0.0",
+  "description": "Decoupled Drupal API with AWS Lambda and Amazon API Gateway",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "sames",
+  "license": "MIT",
+  "devDependencies": {
+    "aws-sdk": "^2.419.0",
+    "serverless-offline": "^4.8.1"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "cors": "^2.8.5",
+    "event-stream": "^4.0.1",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "generate-password": "^1.4.1",
+    "geojson-stream": "^0.1.0",
+    "http-errors": "^1.7.2",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.11",
+    "moment-timezone": "^0.5.26",
+    "mongoose": "^5.5.5",
+    "mongoose-geojson-schema": "^2.1.3",
+    "multer": "^1.4.2",
+    "qs": "^6.6.0",
+    "serverless-http": "^1.9.1"
+  }
+}

@@ -1,0 +1,3 @@
+tokenValidator:
+  handler: authorizer/tokenValidator.handler
+  name: ${self:provider.stage}-tokenValidator

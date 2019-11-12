@@ -1,0 +1,52 @@
+default_env: &default_env
+  # Supported languages seperated by pipe
+  DRUPAL_LANGUAGES: de|en
+  # Act on menu and block content from this Drupal theme (required)
+  DRUPAL_THEME: webapp
+  # Used to authenticate the API against Drupal with elevated privileges
+  # Using Drupal module Simple OAuth
+  # Grant type: client_credentials
+  DRUPAL_SERVICE_API_CLIENT_ID: 00112233-4455-6677-8899-aabbccddeeff
+  # Alternative authentication method using classic Basic Auth
+  DRUPAL_SERVICE_API_BASIC_AUTH_USER: SERVICE_API_USER
+  # Additional NoSQL data source (optional)
+  MONGODB_PROTO: mongodb+srv
+  MONGODB_USERNAME: dbUser
+  # Using MongoDB Atlas here
+  # Requires IP whitelisting of 0.0.0.0, because AWS Lambda uses unpredictable IP addresses
+  MONGODB_HOST: xxxxxxxxxxxxx-xxxxx.mongodb.net
+  # Additional microservices this API connects to (optional)
+  LUFTHANSA_BASE_URL: https://api.lufthansa.com/v1
+  LUFTHANSA_KEY: xxxxxxxxxxxxxxxxxxxxxxxx
+  # CREDENTIALS
+  # Somewhat opinionated way of storing passwords using AWS KMS
+  # Values will be decrypted during initialization of services (over network)
+  # AWS Lambda execution role needs to be registered as KMS key user
+  # To encrypt plain text values use AWS CLI:
+  # $ aws kms encrypt --key-id '' --plaintext '' --profile xxxxxxx
+  KMS_KEY_ID: 00112233-4455-6677-8899-aabbccddeeff
+  # Corresponding OAuth client_secret (needs to be kept secret with this grant type)
+  DRUPAL_SERVICE_API_CLIENT_SECRET: ENCRYPTED_AND_BASE64_ENCODED
+  # Drupal password for user SERVICE_API_USER (alternative)
+  DRUPAL_SERVICE_API_BASIC_AUTH_PASS: ENCRYPTED_AND_BASE64_ENCODED
+  MONGODB_PASSWORD: ENCRYPTED_AND_BASE64_ENCODED
+  LUFTHANSA_SECRET: ENCRYPTED_AND_BASE64_ENCODED
+
+# For multi stage setup, provide different values
+# Default stage: dev
+dev:
+  # YAML fun. Copy from above (global)
+  <<: *default_env
+  # Your Drupal DNS name
+  # We assume a reverse proxy with SSL client authentication
+  DRUPAL_HOST: drupal-dev.example.com
+  # Your MongoDB database name (optional)
+  MONGODB_DATABASE: drupalaux_dev
+  # Email transfer is decoupled from the API via AWS SQS
+  SQS_MAIL_SEND_QUEUE_URL: https://sqs.eu-central-1.amazonaws.com/xxxxxxxxxxxx/dev-MailSendQueue
+
+prod:
+  <<: *default_env
+  DRUPAL_HOST: drupal-prod.example.com
+  MONGODB_DATABASE: drupalaux_prod
+  SQS_MAIL_SEND_QUEUE_URL: https://sqs.eu-central-1.amazonaws.com/xxxxxxxxxxxx/prod-MailSendQueue

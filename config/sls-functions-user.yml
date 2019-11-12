@@ -1,0 +1,18 @@
+apiUser:
+  handler: server/user.handler
+  name: ${self:provider.stage}-apiUser
+  events:
+    - http:
+        path: user/self
+        method: get
+        authorizer: tokenValidator
+        cors: true
+    - http:
+        path: user/{uid}/profiles
+        method: get
+        authorizer: tokenValidator
+        cors: true
+    - http:
+        path: user/register
+        method: post
+        cors: true

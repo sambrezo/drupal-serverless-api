@@ -1,0 +1,37 @@
+Resources:
+  OauthResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - ApiGatewayRestApi
+          - RootResourceId
+      PathPart: oauth
+      RestApiId:
+        Ref: ApiGatewayRestApi
+  OauthTokenProxyResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: OauthResource
+      PathPart: token
+      RestApiId:
+        Ref: ApiGatewayRestApi
+  ProxyMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ResourceId:
+        Ref: OauthTokenProxyResource
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      AuthorizationType: NONE
+      HttpMethod: ANY
+      MethodResponses:
+        - StatusCode: 200
+      Integration:
+        IntegrationHttpMethod: ANY
+        Type: HTTP_PROXY
+        Uri: https://${file(config/sls-environment.yml):${self:provider.stage}.DRUPAL_HOST}/oauth/token
+        IntegrationResponses:
+          - StatusCode: 200
+        PassthroughBehavior: WHEN_NO_MATCH
